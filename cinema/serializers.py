@@ -1,6 +1,6 @@
 from django.db import transaction
 from rest_framework import serializers
-from rest_framework.fields import CharField, IntegerField
+from rest_framework.fields import CharField, IntegerField, SerializerMethodField
 from rest_framework.relations import StringRelatedField
 
 from cinema.models import (
@@ -70,6 +70,7 @@ class MovieSessionListSerializer(MovieSessionSerializer):
     cinema_hall_capacity = serializers.IntegerField(
         source="cinema_hall.capacity", read_only=True
     )
+    tickets_available = SerializerMethodField()
 
     class Meta:
         model = MovieSession
@@ -81,6 +82,9 @@ class MovieSessionListSerializer(MovieSessionSerializer):
             "cinema_hall_capacity",
             "tickets_available",
         )
+
+    def get_tickets_available(self, obj):
+        return int(obj.cinema_hall.capacity) - int(obj.tickets.count())
 
 
 class TicketSessionSerializer(serializers.ModelSerializer):
