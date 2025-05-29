@@ -1,7 +1,10 @@
 from django.db import transaction
 from rest_framework import serializers
-from rest_framework.fields import CharField, IntegerField, SerializerMethodField
-from rest_framework.relations import StringRelatedField
+from rest_framework.fields import (
+    CharField,
+    IntegerField,
+    SerializerMethodField
+)
 
 from cinema.models import (
     Genre,
