@@ -35,7 +35,6 @@ class CinemaHallViewSet(viewsets.ModelViewSet):
 
 class MovieViewSet(viewsets.ModelViewSet):
     serializer_class = MovieSerializer
-    queryset = Movie.objects.all()
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -65,7 +64,6 @@ class MovieViewSet(viewsets.ModelViewSet):
 
 class MovieSessionViewSet(viewsets.ModelViewSet):
     serializer_class = MovieSessionSerializer
-    queryset = MovieSession.objects.all()
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -96,10 +94,15 @@ class Pagination(PageNumberPagination):
 
 
 class OrderViewSet(viewsets.ModelViewSet):
-    queryset = Order.objects.all()
     pagination_class = Pagination
 
     def get_serializer_class(self):
         if self.action in ["list", "retrieve"]:
             return OrderTicketRetrieveSerializer
         return OrderTicketSerializer
+
+    def get_queryset(self):
+        queryset = Order.objects.filter(user=self.request.user)
+        if self.action == "list":
+            queryset = queryset.prefetch_related("tickets")
+        return queryset

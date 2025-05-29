@@ -1,5 +1,6 @@
 from django.db import transaction
 from rest_framework import serializers
+from rest_framework.fields import CharField, IntegerField
 from rest_framework.relations import StringRelatedField
 
 from cinema.models import (
@@ -128,12 +129,12 @@ class TicketSerializer(serializers.ModelSerializer):
 
 
 class MovieSessionTicketSerializer(MovieSessionSerializer):
-    movie_title = StringRelatedField(read_only=True, source="movie.title")
-    cinema_hall_name = StringRelatedField(
+    movie_title = CharField(read_only=True, source="movie.title")
+    cinema_hall_name = CharField(
         read_only=True,
         source="cinema_hall.name"
     )
-    cinema_hall_capacity = serializers.IntegerField(
+    cinema_hall_capacity = IntegerField(
         read_only=True,
         source="cinema_hall.capacity"
     )
